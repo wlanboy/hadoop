@@ -7,7 +7,6 @@ docker compose build
 ```bash
 # ZK + JNs zuerst
 docker compose up -d zk1 zk2 zk3 jn1 jn2 jn3
-docker compose ps
 
 docker compose run --rm nn1 bash
 hdfs namenode -format
