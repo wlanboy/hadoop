@@ -15,18 +15,18 @@ hdfs --daemon start namenode
 hdfs --daemon start zkfc
 exit
 
+docker compose up -d nn1
+
 docker compose run --rm nn2 bash
 hdfs namenode -bootstrapStandby
 hdfs --daemon start namenode
 hdfs --daemon start zkfc
 exit
 
-# NameNodes starten
-docker compose up -d nn1
 docker compose up -d nn2
 
 # Datanodes und yarn
-docker-compose up -d dn1 dn2 dn3 rm nm
+docker-compose up -d --no-recreate dn1 dn2 dn3 rm nm
 ``
 
 # start after init
