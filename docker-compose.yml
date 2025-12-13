@@ -1,0 +1,222 @@
+networks:
+  hadoop:
+    name: hadoop
+    driver: bridge
+
+volumes:
+  nn1_data:
+  nn2_data:
+  dn1_data:
+  dn2_data:
+  dn3_data:
+  jn1_data:
+  jn2_data:
+  jn3_data:
+  jn1_tmp:
+  jn2_tmp:
+  jn3_tmp:
+  zk1_data:
+  zk2_data:
+  zk3_data:
+
+services:
+  # ZooKeeper ensemble for NN HA
+  zk1:
+    image: zookeeper:3.9.4
+    container_name: zk1
+    hostname: zk1
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zk1:2888:3888;2181 server.2=zk2:2888:3888;2181 server.3=zk3:2888:3888;2181
+      ZOO_PORT: 2181
+      ZOO_CLIENT_PORT: 2181
+    networks: [hadoop]
+    volumes:
+      - zk1_data:/data
+    restart: unless-stopped
+
+  zk2:
+    image: zookeeper:3.9.4
+    container_name: zk2
+    hostname: zk2
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zk1:2888:3888;2181 server.2=zk2:2888:3888;2181 server.3=zk3:2888:3888;2181
+      ZOO_PORT: 2181
+      ZOO_CLIENT_PORT: 2181
+    networks: [hadoop]
+    volumes:
+      - zk2_data:/data
+    restart: unless-stopped
+
+  zk3:
+    image: zookeeper:3.9.4
+    container_name: zk3
+    hostname: zk3
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zk1:2888:3888;2181 server.2=zk2:2888:3888;2181 server.3=zk3:2888:3888;2181
+      ZOO_PORT: 2181
+      ZOO_CLIENT_PORT: 2181
+    networks: [hadoop]
+    volumes:
+      - zk3_data:/data
+    restart: unless-stopped
+
+  # JournalNodes (required for NN HA)
+  jn1:
+    build: ./hadoop-base
+    container_name: jn1
+    hostname: jn1
+    environment:
+      - ROLE=journalnode
+    networks: [hadoop]
+    volumes:
+      - jn1_data:/tmp/hadoop/dfs/journalnode
+      - ./config:/opt/hadoop/etc/hadoop
+    restart: unless-stopped
+
+  jn2:
+    build: ./hadoop-base
+    container_name: jn2
+    hostname: jn2
+    environment:
+      - ROLE=journalnode
+    networks: [hadoop]
+    volumes:
+      - jn2_data:/tmp/hadoop/dfs/journalnode
+      - ./config:/opt/hadoop/etc/hadoop
+    restart: unless-stopped
+
+  jn3:
+    build: ./hadoop-base
+    container_name: jn3
+    hostname: jn3
+    environment:
+      - ROLE=journalnode
+    networks: [hadoop]
+    volumes:
+      - jn3_data:/tmp/hadoop/dfs/journalnode
+      - ./config:/opt/hadoop/etc/hadoop
+    restart: unless-stopped
+
+  # NameNodes with ZKFC
+  nn1:
+    build: ./hadoop-base
+    container_name: nn1
+    hostname: nn1
+    environment:
+      - ROLE=namenode
+      - NN_ID=nn1
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+      - jn1
+      - jn2
+      - jn3
+    networks: [hadoop]
+    ports:
+      - "9870:9870"   # NN1 web UI
+    volumes:
+      - nn1_data:/data/hdfs/namenode
+      - ./config:/opt/hadoop/etc/hadoop
+    restart: unless-stopped
+
+  nn2:
+    build: ./hadoop-base
+    container_name: nn2
+    hostname: nn2
+    environment:
+      - ROLE=namenode
+      - NN_ID=nn2
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+      - jn1
+      - jn2
+      - jn3
+    networks: [hadoop]
+    ports:
+      - "9871:9870"   # NN2 web UI
+    volumes:
+      - nn2_data:/data/hdfs/namenode
+      - ./config:/opt/hadoop/etc/hadoop
+    restart: unless-stopped
+
+  # DataNodes
+  dn1:
+    build: ./hadoop-base
+    container_name: dn1
+    hostname: dn1
+    environment:
+      - ROLE=datanode
+    depends_on:
+      - nn1
+      - nn2
+    networks: [hadoop]
+    volumes:
+      - dn1_data:/data/hdfs/datanode
+      - ./config:/opt/hadoop/etc/hadoop
+    restart: unless-stopped
+
+  dn2:
+    build: ./hadoop-base
+    container_name: dn2
+    hostname: dn2
+    environment:
+      - ROLE=datanode
+    depends_on:
+      - nn1
+      - nn2
+    networks: [hadoop]
+    volumes:
+      - dn2_data:/data/hdfs/datanode
+      - ./config:/opt/hadoop/etc/hadoop
+    restart: unless-stopped
+
+  dn3:
+    build: ./hadoop-base
+    container_name: dn3
+    hostname: dn3
+    environment:
+      - ROLE=datanode
+    depends_on:
+      - nn1
+      - nn2
+    networks: [hadoop]
+    volumes:
+      - dn3_data:/data/hdfs/datanode
+      - ./config:/opt/hadoop/etc/hadoop
+    restart: unless-stopped
+
+  # YARN (minimal, just for distcp)
+  rm:
+    build: ./hadoop-base
+    container_name: rm
+    hostname: rm
+    environment:
+      - ROLE=resourcemanager
+    depends_on:
+      - nn1
+      - nn2
+    networks: [hadoop]
+    ports:
+      - "8088:8088"   # RM web UI
+    volumes:
+      - ./config:/opt/hadoop/etc/hadoop
+    restart: unless-stopped
+
+  nm:
+    build: ./hadoop-base
+    container_name: nm
+    hostname: nm
+    environment:
+      - ROLE=nodemanager
+    depends_on:
+      - rm
+    networks: [hadoop]
+    volumes:
+      - ./config:/opt/hadoop/etc/hadoop
+    restart: unless-stopped

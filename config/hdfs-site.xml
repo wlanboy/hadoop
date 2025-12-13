@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<configuration>
+  <!-- Nameservice and HA pair -->
+  <property>
+    <name>dfs.nameservices</name>
+    <value>ns1</value>
+  </property>
+  <property>
+    <name>dfs.ha.namenodes.ns1</name>
+    <value>nn1,nn2</value>
+  </property>
+
+  <!-- NN RPC addresses -->
+  <property>
+    <name>dfs.namenode.rpc-address.ns1.nn1</name>
+    <value>nn1:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.ns1.nn2</name>
+    <value>nn2:8020</value>
+  </property>
+
+  <!-- NN HTTP addresses -->
+  <property>
+    <name>dfs.namenode.http-address.ns1.nn1</name>
+    <value>nn1:9870</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.ns1.nn2</name>
+    <value>nn2:9870</value>
+  </property>
+
+  <!-- JournalNodes for shared edits -->
+  <property>
+    <name>dfs.namenode.shared.edits.dir</name>
+    <value>qjournal://jn1:8485;jn2:8485;jn3:8485/ns1</value>
+  </property>
+
+  <!-- Enable automatic failover via ZK -->
+  <property>
+    <name>dfs.ha.automatic-failover.enabled</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>ha.zookeeper.quorum</name>
+    <value>zk1:2181,zk2:2181,zk3:2181</value>
+  </property>
+
+  <!-- Client-side HA -->
+  <property>
+    <name>dfs.client.failover.proxy.provider.ns1</name>
+    <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+  </property>
+
+  <!-- Storage dirs -->
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:///data/hdfs/namenode</value>
+  </property>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:///data/hdfs/datanode</value>
+  </property>
+
+  <!-- DN web ports (defaults used) -->
+  <property>
+    <name>dfs.datanode.http.address</name>
+    <value>0.0.0.0:9864</value>
+  </property>
+
+  <!-- Replication, adjust as needed -->
+  <property>
+    <name>dfs.replication</name>
+    <value>2</value>
+  </property>
+
+  <!-- Permissions can be simplified for lab -->
+  <property>
+    <name>dfs.permissions.enabled</name>
+    <value>false</value>
+  </property>
+
+  <property>
+    <name>dfs.journalnode.edits.dir</name>
+    <value>/tmp/hadoop/dfs/journalnode</value>
+  </property>
+</configuration>
