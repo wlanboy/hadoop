@@ -9,16 +9,17 @@ docker compose build
 docker compose up -d zk1 zk2 zk3 jn1 jn2 jn3
 docker compose ps
 
-docker volume create nn1_data
-docker run --rm -it \
-  --network hadoop \
-  -v nn1_data:/data/hdfs/namenode \
-  -v ./config:/opt/hadoop/etc/hadoop \
-  --hostname nn1 \
-  hadoop-nn1:latest bash
-
+docker compose run --rm nn1 bash
 hdfs namenode -format
 HADOOP_OPTS="-Ddfs.ha.namenode.id=nn1" hdfs zkfc -formatZK
+hdfs --daemon start namenode
+hdfs --daemon start zkfc
+exit
+
+docker compose run --rm nn2 bash
+hdfs namenode -bootstrapStandby
+hdfs --daemon start namenode
+hdfs --daemon start zkfc
 exit
 
 # NameNodes starten
