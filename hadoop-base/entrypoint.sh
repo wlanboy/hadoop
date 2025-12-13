@@ -39,20 +39,8 @@ case "$ROLE" in
     wait_for_host zk2 2181 || true
     wait_for_host zk3 2181 || true
 
-    # One-time NN format if empty
-    if [ -z "$(ls -A /data/hdfs/namenode 2>/dev/null || true)" ]; then
-      echo "Formatting NameNode dir..."
-      "$HADOOP_HOME"/bin/hdfs namenode -format -force -nonInteractive
-    fi
-
     echo "Starting NameNode..."
     "$HADOOP_HOME"/bin/hdfs --daemon start namenode
-
-    # Format ZK for HA once from nn1
-    if [ "$NN_ID" = "nn1" ]; then
-      echo "Formatting ZooKeeper for ZKFC (if needed)..."
-      "$HADOOP_HOME"/bin/hdfs zkfc -formatZK -force || true
-    fi
 
     echo "Starting ZKFC..."
     "$HADOOP_HOME"/bin/hdfs --daemon start zkfc
