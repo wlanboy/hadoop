@@ -17,7 +17,7 @@ docker compose up -d --no-recreate nn2
 # ONLY if timing issues due to slow laptops
 docker exec -it nn1 hdfs haadmin -transitionToActive nn1 --forcemanual
 
-# Datanodes und yarn
+# Datanodes
 docker-compose up -d --no-recreate dn1 dn2 dn3 
 
 # Ressource Manager
@@ -28,7 +28,7 @@ docker-compose up -d --no-recreate nm
 
 # restart rm/nm for config changes
 docker compose restart rm nm
-``
+```
 
 # start after init
 ```bash
@@ -189,4 +189,4 @@ YARN    1
 # delete
 ```bash 
 docker compose down -v 
-``
+```
