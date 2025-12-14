@@ -14,7 +14,7 @@ docker compose up -d --no-recreate nn1
 # start secondary namenode -> init script bootstrap
 docker compose up -d --no-recreate nn2
 
-# if timing issues
+# ONLY if timing issues due to slow laptops
 docker exec -it nn1 hdfs haadmin -transitionToActive nn1 --forcemanual
 
 # Datanodes und yarn
