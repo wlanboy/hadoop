@@ -3,8 +3,8 @@ set -euo pipefail
 
 ROLE="${ROLE:-}"
 NN_ID="${NN_ID:-nn1}"
+LOCK_FILE="/data/hdfs/namenode/.init_done"
 
-# Wait for ZooKeeper if needed
 wait_for_host() {
   local host="$1"
   local port="$2"
@@ -22,9 +22,6 @@ wait_for_host() {
 
 export HADOOP_HOME=/opt/hadoop
 export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
-
-# Default configs location already mounted at /opt/hadoop/etc/hadoop
-# Create runtime directories
 mkdir -p /var/log/hadoop
 
 case "$ROLE" in
@@ -34,15 +31,29 @@ case "$ROLE" in
     ;;
 
   namenode)
-    # Ensure JournalNodes and ZooKeeper are ready
+    # Warten auf ZK
     wait_for_host zk1 2181 || true
     wait_for_host zk2 2181 || true
     wait_for_host zk3 2181 || true
 
-    echo "Starting NameNode..."
+    if [ ! -f "$LOCK_FILE" ]; then
+      echo "First start of $NN_ID..."
+      if [ "$NN_ID" = "nn1" ]; then
+        echo "Formatting NameNode (nn1)..."
+        "$HADOOP_HOME"/bin/hdfs namenode -format -force -nonInteractive
+      else
+        echo "Bootstrapping Standby NameNode ($NN_ID)..."
+        "$HADOOP_HOME"/bin/hdfs namenode -bootstrapStandby
+      fi
+      touch "$LOCK_FILE"
+    else
+      echo "$NN_ID already initialized, skipping format/bootstrap."
+    fi
+
+    echo "Starting NameNode daemon..."
     "$HADOOP_HOME"/bin/hdfs --daemon start namenode
 
-    echo "Starting ZKFC..."
+    echo "Starting ZKFC daemon..."
     "$HADOOP_HOME"/bin/hdfs --daemon start zkfc
     ;;
 
@@ -67,5 +78,5 @@ case "$ROLE" in
     ;;
 esac
 
-# Keep container running with logs
+# Container am Leben halten
 tail -F /var/log/hadoop/* 2>/dev/null || tail -f /dev/null
