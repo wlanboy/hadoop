@@ -8,22 +8,14 @@ docker compose build
 # ZK + JNs zuerst
 docker compose up -d zk1 zk2 zk3 jn1 jn2 jn3
 
-docker compose run --rm nn1 bash
-hdfs namenode -format
-HADOOP_OPTS="-Ddfs.ha.namenode.id=nn1" hdfs zkfc -formatZK
-hdfs --daemon start namenode
-hdfs --daemon start zkfc
-exit
+# start primary namenode -> init script format
+docker compose up -d --no-recreate nn1
 
-docker compose up -d nn1
+# start secondary namenode -> init script bootstrap
+docker compose up -d --no-recreate nn2
 
-docker compose run --rm nn2 bash
-hdfs namenode -bootstrapStandby
-hdfs --daemon start namenode
-hdfs --daemon start zkfc
-exit
-
-docker compose up -d nn2
+# if timing issues
+docker exec -it nn1 hdfs haadmin -transitionToActive nn1 --forcemanual
 
 # Datanodes und yarn
 docker-compose up -d --no-recreate dn1 dn2 dn3 rm nm
@@ -36,7 +28,9 @@ docker compose up -d
 
 # web uis
 * http://localhost:9870
+![active namenode with 3 datanodes](./screenshots/hadoop-namenode.png)
 * http://localhost:9871
+![active namenode with 3 datanodes](./screenshots/hadoop-namenode2.png)
 
 # commands
 ```bash
