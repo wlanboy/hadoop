@@ -218,6 +218,8 @@ services:
     depends_on:
       - rm
     networks: [hadoop]
+    ports:
+      - "8042:8042"   # NM web UI
     volumes:
       - ./config:/opt/hadoop/etc/hadoop
     restart: unless-stopped
