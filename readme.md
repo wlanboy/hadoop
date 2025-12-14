@@ -34,12 +34,8 @@ docker compose up -d
 
 # commands
 ```bash
-docker exec -it nn1 hdfs --daemon start zkfc
-docker exec -it nn2 hdfs --daemon start zkfc
-
 docker exec -it nn1 hdfs haadmin -getServiceState nn1
 docker exec -it nn1 hdfs haadmin -getServiceState nn2
-docker exec -it nn1 hdfs haadmin -transitionToActive nn1
 ```
 
 # init transfer folder and start transfer
