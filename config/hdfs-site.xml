@@ -50,6 +50,22 @@
     <value>120000</value> <!-- 120 Sekunden -->
   </property>
 
+  <!-- Einfache Fencing-Methode: Shell-Command, das immer erfolgreich ist -->
+  <property>
+    <name>dfs.ha.fencing.methods</name>
+    <value>shell(/bin/true)</value>
+  </property>
+
+  <!-- Optional: Timeout für Fencing -->
+  <property>
+    <name>dfs.ha.fencing.retry.sleep</name>
+    <value>2000</value>
+  </property>
+  <property>
+    <name>dfs.ha.fencing.retry.retries</name>
+    <value>1</value>
+  </property>
+
   <!-- Client-side HA -->
   <property>
     <name>dfs.client.failover.proxy.provider.ns1</name>
