@@ -25,6 +25,9 @@ docker-compose up -d --no-recreate rm
 
 # Nodemanager runner
 docker-compose up -d --no-recreate nm
+
+# restart rm/nm for config changes
+docker compose restart rm nm
 ``
 
 # start after init
@@ -96,10 +99,91 @@ docker exec nn1 hdfs dfs -put /tmp/input.txt /input/
 
 # WordCount starten
 docker exec rm hadoop jar /opt/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.4.2.jar wordcount /input /output
+2025-12-14 08:59:25,614 INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at rm/172.19.0.10:8032
+2025-12-14 08:59:26,256 INFO  org.apache.hadoop.mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/root/.staging/job_1765702733708_0001
+2025-12-14 08:59:26,677 INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat: Total input files to process : 1
+2025-12-14 08:59:26,821 INFO  org.apache.hadoop.mapreduce.JobSubmitter: number of splits:1
+2025-12-14 08:59:27,103 INFO  org.apache.hadoop.mapreduce.JobSubmitter: Submitting tokens for job: job_1765702733708_0001
+2025-12-14 08:59:27,103 INFO  org.apache.hadoop.mapreduce.JobSubmitter: Executing with tokens: []
+2025-12-14 08:59:27,346 INFO  org.apache.hadoop.conf.Configuration: resource-types.xml not found
+2025-12-14 08:59:27,347 INFO  org.apache.hadoop.yarn.util.resource.ResourceUtils: Unable to find 'resource-types.xml'.
+2025-12-14 08:59:27,873 INFO  org.apache.hadoop.yarn.client.api.impl.YarnClientImpl: Submitted application application_1765702733708_0001
+2025-12-14 08:59:27,957 INFO  org.apache.hadoop.mapreduce.Job: The url to track the job: http://rm:8088/proxy/application_1765702733708_0001/
+2025-12-14 08:59:27,958 INFO  org.apache.hadoop.mapreduce.Job: Running job: job_1765702733708_0001
+2025-12-14 08:59:37,307 INFO  org.apache.hadoop.mapreduce.Job: Job job_1765702733708_0001 running in uber mode : true
+2025-12-14 08:59:37,309 INFO  org.apache.hadoop.mapreduce.Job:  map 100% reduce 0%
+2025-12-14 08:59:39,400 INFO  org.apache.hadoop.mapreduce.Job:  map 100% reduce 100%
+2025-12-14 08:59:39,422 INFO  org.apache.hadoop.mapreduce.Job: Job job_1765702733708_0001 completed successfully
+2025-12-14 08:59:39,587 INFO  org.apache.hadoop.mapreduce.Job: Counters: 57
+        File System Counters
+                FILE: Number of bytes read=116
+                FILE: Number of bytes written=190
+                FILE: Number of read operations=0
+                FILE: Number of large read operations=0
+                FILE: Number of write operations=0
+                HDFS: Number of bytes read=272
+                HDFS: Number of bytes written=639035
+                HDFS: Number of read operations=37
+                HDFS: Number of large read operations=0
+                HDFS: Number of write operations=8
+                HDFS: Number of bytes read erasure-coded=0
+        Job Counters 
+                Launched map tasks=1
+                Launched reduce tasks=1
+                Other local map tasks=1
+                Total time spent by all maps in occupied slots (ms)=0
+                Total time spent by all reduces in occupied slots (ms)=0
+                TOTAL_LAUNCHED_UBERTASKS=2
+                NUM_UBER_SUBMAPS=1
+                NUM_UBER_SUBREDUCES=1
+                Total time spent by all map tasks (ms)=280
+                Total time spent by all reduce tasks (ms)=1219
+                Total vcore-milliseconds taken by all map tasks=0
+                Total vcore-milliseconds taken by all reduce tasks=0
+                Total megabyte-milliseconds taken by all map tasks=0
+                Total megabyte-milliseconds taken by all reduce tasks=0
+        Map-Reduce Framework
+                Map input records=1
+                Map output records=4
+                Map output bytes=40
+                Map output materialized bytes=42
+                Input split bytes=91
+                Combine input records=4
+                Combine output records=3
+                Reduce input groups=3
+                Reduce shuffle bytes=42
+                Reduce input records=3
+                Reduce output records=3
+                Spilled Records=6
+                Shuffled Maps =1
+                Failed Shuffles=0
+                Merged Map outputs=1
+                GC time elapsed (ms)=28
+                CPU time spent (ms)=1320
+                Physical memory (bytes) snapshot=801300480
+                Virtual memory (bytes) snapshot=6182551552
+                Total committed heap usage (bytes)=461373440
+                Peak Map Physical memory (bytes)=393637888
+                Peak Map Virtual memory (bytes)=3087605760
+                Peak Reduce Physical memory (bytes)=407662592
+                Peak Reduce Virtual memory (bytes)=3094945792
+        Shuffle Errors
+                BAD_ID=0
+                CONNECTION=0
+                IO_ERROR=0
+                WRONG_LENGTH=0
+                WRONG_MAP=0
+                WRONG_REDUCE=0
+        File Input Format Counters 
+                Bytes Read=24
+        File Output Format Counters 
+                Bytes Written=24
 
 # Ergebnis ansehen
 docker exec nn1 hdfs dfs -cat /output/part-r-00000
-
+Hadoop  1
+Hello   2
+YARN    1
 ```
 
 # delete
