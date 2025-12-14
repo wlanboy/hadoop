@@ -42,7 +42,13 @@ docker exec -it nn1 hdfs haadmin -getServiceState nn2
 ```bash
 docker exec nn1 hdfs dfs -ls /
 
-docker exec nn1 hdfs dfs -mkdir -p /data
+# Create a local file inside the container
+docker exec nn1 bash -c 'echo "Hello HDFS" > /tmp/hello.txt'
+
+# Copy it into HDFS
+docker exec nn1 hdfs dfs -put /tmp/hello.txt /data/
+
+docker exec nn1 hdfs dfs -ls /
 
 docker exec nn1 hadoop distcp hdfs://oldcluster:8020/data hdfs://ns1/data
 ```
