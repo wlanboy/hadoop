@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<configuration>
+  <!-- Root queue must have at least one child -->
+  <property>
+    <name>yarn.scheduler.capacity.root.queues</name>
+    <value>default</value>
+  </property>
+
+  <!-- Define the default queue -->
+  <property>
+    <name>yarn.scheduler.capacity.root.default.capacity</name>
+    <value>100</value>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.capacity.root.default.maximum-capacity</name>
+    <value>100</value>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.capacity.root.default.state</name>
+    <value>RUNNING</value>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.capacity.root.default.user-limit-factor</name>
+    <value>1</value>
+  </property>
+</configuration>

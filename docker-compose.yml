@@ -204,6 +204,7 @@ services:
     networks: [hadoop]
     ports:
       - "8088:8088"   # RM web UI
+      - "19888:19888" # JobHistory web UI
     volumes:
       - ./config:/opt/hadoop/etc/hadoop
     restart: unless-stopped

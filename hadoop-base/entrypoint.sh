@@ -87,11 +87,15 @@ case "${ROLE}" in
 
   resourcemanager)
     echo "Starting ResourceManager..."
+    export HADOOP_LOG_DIR=/opt/hadoop/logs
+    mkdir -p "$HADOOP_LOG_DIR"
     "$HADOOP_HOME"/bin/yarn --daemon start resourcemanager
     ;;
 
   nodemanager)
     echo "Starting NodeManager..."
+    export HADOOP_LOG_DIR=/opt/hadoop/logs
+    mkdir -p "$HADOOP_LOG_DIR"
     "$HADOOP_HOME"/bin/yarn --daemon start nodemanager
     ;;
 

@@ -30,7 +30,9 @@ docker compose up -d
 * http://localhost:9870
 ![active namenode with 3 datanodes](./screenshots/hadoop-namenode.png)
 * http://localhost:9871
-![active namenode with 3 datanodes](./screenshots/hadoop-namenode2.png)
+![passive  namenode with 3 datanodes](./screenshots/hadoop-namenode2.png)
+* http://localhost:8088
+![ressource manager](./screenshots/hadoop-ressourcemanager.png)
 
 # commands
 ```bash
