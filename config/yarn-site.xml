@@ -28,7 +28,31 @@
   </property>
   <property>
     <name>yarn.nodemanager.env-whitelist</name>
-    <value>JAVA_HOME,HADOOP_HOME,HADOOP_CONF_DIR</value>
+    <value>JAVA_HOME,HADOOP_HOME,HADOOP_CONF_DIR,HADOOP_MAPRED_HOME</value>
+  </property>
+
+  <property>
+    <name>yarn.application.classpath</name>
+    <value>
+      /opt/hadoop/etc/hadoop,
+      /opt/hadoop/share/hadoop/common/*,
+      /opt/hadoop/share/hadoop/common/lib/*,
+      /opt/hadoop/share/hadoop/hdfs/*,
+      /opt/hadoop/share/hadoop/hdfs/lib/*,
+      /opt/hadoop/share/hadoop/yarn/*,
+      /opt/hadoop/share/hadoop/yarn/lib/*,
+      /opt/hadoop/share/hadoop/mapreduce/*,
+      /opt/hadoop/share/hadoop/mapreduce/lib/*
+    </value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.local-dirs</name>
+    <value>/data/yarn/local</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.log-dirs</name>
+    <value>/data/yarn/logs</value>
   </property>
 
   <!-- Containers memory/cpu conservative defaults -->
