@@ -1,9 +1,13 @@
-# build
+# Projektbeschreibung
+Dieses Repro baut ein eigenes Docker Image für die aktuelles Hadoop Version mit Java 11 auf.
+Es nutzt dieses Image um einen Hadoop Cluster mit zwei Namenodes, 3 Journalnodes, 3 Zookeepernodes, 3 Datanodes, einem Ressourcemanager und einem Nodemanager.
+
+## build
 ```bash
 docker compose build
 ```
 
-# init
+## init
 ```bash
 # ZK + JNs zuerst
 docker compose up -d zk1 zk2 zk3 jn1 jn2 jn3
@@ -30,12 +34,12 @@ docker-compose up -d --no-recreate nm
 docker compose restart rm nm
 ```
 
-# start after init
+## start after init
 ```bash
 docker compose up -d
 ```
 
-# web uis
+## web uis
 * http://localhost:9870
 ![active namenode with 3 datanodes](./screenshots/hadoop-namenode.png)
 * http://localhost:9871
@@ -45,13 +49,13 @@ docker compose up -d
 * http://localhost:8042/node/allApplications
 ![ressource manager](./screenshots/hadoop-nodemanager.png)
 
-# commands
+## commands
 ```bash
 docker exec -it nn1 hdfs haadmin -getServiceState nn1
 docker exec -it nn1 hdfs haadmin -getServiceState nn2
 ```
 
-# init transfer folder and start transfer
+## init transfer folder and start transfer
 ```bash
 docker exec nn1 hdfs dfs -ls /
 
@@ -66,7 +70,7 @@ docker exec nn1 hdfs dfs -ls /
 docker exec nn1 hadoop distcp hdfs://oldcluster:8020/data hdfs://ns1/data
 ```
 
-# run yarn examples
+## run yarn examples
 ```bash
 docker exec rm ls -l /opt/hadoop/share/hadoop/yarn/yarn-service-examples
 total 16
@@ -90,7 +94,7 @@ total 5492
 -rw-r--r-- 1 1001 1001  281633 Aug 20 10:49 hadoop-mapreduce-examples-3.4.2.jar
 ```
 
-# word count beispiel
+## word count beispiel
 ```bash
 # Datei in HDFS anlegen
 docker exec nn1 bash -c 'echo "Hello Hadoop Hello YARN" > /tmp/input.txt'
@@ -186,7 +190,7 @@ Hello   2
 YARN    1
 ```
 
-# delete
+## delete
 ```bash 
 docker compose down -v 
 ```
